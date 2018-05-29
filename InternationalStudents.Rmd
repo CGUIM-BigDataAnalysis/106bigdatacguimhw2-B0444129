@@ -27,6 +27,9 @@ s106<- read_csv("https://quality.data.gov.tw/dq_download_csv.php?nid=6289&md5_ur
 ```
 
 ### 哪些國家來台灣唸書的學生最多呢？ 
+
+中國大陸來團灣念書的學生最多。有152524人
+
 ```{r ToTWNCountry}
 
 library(dplyr)
@@ -61,6 +64,9 @@ knitr::kable(c103104105106[1:10,c(1,6)])
 ```
 
 ### 哪間大學的境外生最多呢？
+
+國立台灣師範大學境外生有22113人，如果把無法區分校別的去掉的話，它是最多的。
+
 ```{r ToTWNUniversity}
 
 s103$`非學位生-大陸研修生`<-as.numeric(gsub("…","0",s103$`非學位生-大陸研修生`))
@@ -142,6 +148,9 @@ Student_RPT_07 <- read_csv("Student_RPT_07.csv")
 ```
 
 ### 台灣大專院校的學生最喜歡去哪些國家進修交流呢？
+
+最喜歡去中國大陸進修交流，有8375人。
+
 ```{r FromTWNCountry}
 
 library(dplyr)
@@ -154,6 +163,9 @@ knitr::kable(b[1:10,])
 ```
 
 ### 哪間大學的出國交流學生數最多呢？
+
+國立台灣大學出國交流學生最多，有2224人。
+
 ```{r FromTWNUniversity}
 
 c<-subset(Student_RPT_07,`學年度`>102)%>%
@@ -212,6 +224,9 @@ m105 <- read_csv("C:/Users/CHIUCHUNWEI/Downloads/m105.csv")
 ```
 
 ### 台灣學生最喜歡去哪些國家留學呢？
+
+最喜歡去美國，有21127人。
+
 ```{r FromTWNAb}
 
 m105$X4=NULL
