@@ -1,0 +1,289 @@
+---
+title: "106-2 大數據分析方法 作業二"
+output: github_document
+author: 邱俊維
+---
+
+作業完整說明[連結](https://docs.google.com/document/d/1aLGSsGXhgOVgwzSg9JdaNz2qGPQJSoupDAQownkGf_I/edit?usp=sharing)
+
+學習再也不限定在自己出生的國家，台灣每年有許多學生選擇就讀國外的大專院校，同時也有人多國外的學生來台灣就讀，透過分析[大專校院境外學生人數統計](https://data.gov.tw/dataset/6289)、[大專校院本國學生出國進修交流數](https://data.gov.tw/dataset/24730)、[世界各主要國家之我國留學生人數統計表](https://ws.moe.edu.tw/Download.ashx?u=C099358C81D4876CC7586B178A6BD6D5062C39FB76BDE7EC7685C1A3C0846BCDD2B4F4C2FE907C3E7E96F97D24487065577A728C59D4D9A4ECDFF432EA5A114C8B01E4AFECC637696DE4DAECA03BB417&n=4E402A02CE6F0B6C1B3C7E89FDA1FAD0B5DDFA6F3DA74E2DA06AE927F09433CFBC07A1910C169A1845D8EB78BD7D60D7414F74617F2A6B71DC86D17C9DA3781394EF5794EEA7363C&icon=..csv)可以了解103年以後各大專院校國際交流的情形。請同學分析以下議題，並以視覺化的方式呈現分析結果，呈現103年以後大專院校國際交流的情形。
+
+
+
+## 來台境外生分析
+### 資料匯入與處理
+```{r dataloadToTWN}
+
+library(readr)
+c103 <- read_csv("https://quality.data.gov.tw/dq_download_csv.php?nid=6289&md5_url=25f64d5125016dcd6aed42e50c972ed0")
+s103<- read_csv("https://quality.data.gov.tw/dq_download_csv.php?nid=6289&md5_url=a6d1469f39fe41fb81dbfc373aef3331")
+c104 <- read_csv("https://quality.data.gov.tw/dq_download_csv.php?nid=6289&md5_url=4d3e9b37b7b0fd3aa18a388cdbc77996")
+s104<- read_csv("https://quality.data.gov.tw/dq_download_csv.php?nid=6289&md5_url=8baeae81cba74f35cf0bb1333d3d99f5")
+c105 <- read_csv("https://quality.data.gov.tw/dq_download_csv.php?nid=6289&md5_url=19bedf88cf46999da12513de755c33c6")
+s105<- read_csv("https://quality.data.gov.tw/dq_download_csv.php?nid=6289&md5_url=1a485383cf9995da679c3798ab4fd681")
+c106 <- read_csv("https://quality.data.gov.tw/dq_download_csv.php?nid=6289&md5_url=50e3370f9f8794f2054c0c82a2ed8c91")
+s106<- read_csv("https://quality.data.gov.tw/dq_download_csv.php?nid=6289&md5_url=883e2ab4d5357f70bea9ac44a47d05cc")
+
+```
+
+### 哪些國家來台灣唸書的學生最多呢？ 
+```{r ToTWNCountry}
+
+library(dplyr)
+library(knitr)
+c103<-data.frame(country=c103$國別,people103=c103$`學位生-正式修讀學位外國生`+c103$`學位生-僑生(含港澳)`+c103$`學位生-正式修讀學位陸生`+
+                   c103$`非學位生-外國交換生`+c103$`非學位生-外國短期研習及個人選讀`+
+                   c103$`非學位生-大專附設華語文中心學生`+c103$`非學位生-大陸研修生`+
+                   c103$`非學位生-海青班`+c103$境外專班)
+
+c104<-data.frame(country=c104$國別,people104=c104$`學位生-正式修讀學位外國生`+c104$`學位生-僑生(含港澳)`+c104$`學位生-正式修讀學位陸生`+
+                   c104$`非學位生-外國交換生`+c104$`非學位生-外國短期研習及個人選讀`+
+                   c104$`非學位生-大專附設華語文中心學生`+c104$`非學位生-大陸研修生`+
+                   c104$`非學位生-海青班`+c104$境外專班)
+c103104<-full_join(c103,c104,by="country")
+
+c105<-data.frame(country=c105$國別,people105=c105$`學位生_正式修讀學位外國生`+c105$`學位生_僑生(含港澳)`+c105$`學位生_正式修讀學位陸生`+
+                   c105$`非學位生_外國交換生`+c105$`非學位生_外國短期研習及個人選讀`+
+                   c105$`非學位生_大專附設華語文中心學生`+c105$`非學位生_大陸研修生`+
+                   c105$`非學位生_海青班`+c105$境外專班)
+c103104105<-full_join(c103104,c105,by="country")
+
+c106<-data.frame(country=c106$國別,people106=c106$`學位生_正式修讀學位外國生`+c106$`學位生_僑生(含港澳)`+c106$`學位生_正式修讀學位陸生`+
+                   c106$`非學位生_外國交換生`+c106$`非學位生_外國短期研習及個人選讀`+
+                   c106$`非學位生_大專附設華語文中心學生`+c106$`非學位生_大陸研修生`+
+                   c106$`非學位生_海青班`+c106$境外專班)
+c103104105106<-full_join(c103104105,c106,by="country")
+c103104105106[is.na(c103104105106)]=0
+c103104105106$total<-c103104105106$people103+c103104105106$people104+c103104105106$people105+c103104105106$people106
+c103104105106<-arrange(c103104105106,desc(c103104105106$total))
+knitr::kable(c103104105106[1:10,c(1,6)])
+
+```
+
+### 哪間大學的境外生最多呢？
+```{r ToTWNUniversity}
+
+s103$`非學位生-大陸研修生`<-as.numeric(gsub("…","0",s103$`非學位生-大陸研修生`))
+s103<-data.frame(school=s103$學校名稱,people103=s103$`學位生-正式修讀學位外國生`+s103$`學位生-僑生(含港澳)`+s103$`學位生-正式修讀學位陸生`+
+                   s103$`非學位生-外國交換生`+s103$`非學位生-外國短期研習及個人選讀`+s103$`非學位生-大專附設華語文中心學生`+
+                   s103$`非學位生-大陸研修生`+s103$`非學位生-海青班`+s103$境外專班)
+
+s104$`非學位生-大陸研修生`<-as.numeric(gsub("…","0",s104$`非學位生-大陸研修生`))
+s104<-data.frame(school=s104$學校名稱,people104=s104$`學位生-正式修讀學位外國生`+s104$`學位生-僑生(含港澳)`+s104$`學位生-正式修讀學位陸生`+
+                   s104$`非學位生-外國交換生`+s104$`非學位生-外國短期研習及個人選讀`+s104$`非學位生-大專附設華語文中心學生`+
+                   s104$`非學位生-大陸研修生`+s104$`非學位生-海青班`+s104$境外專班)
+s103104<-full_join(s103,s104,by="school")
+
+s105$`非學位生_大陸研修生`<-as.numeric(gsub("…","0",s105$`非學位生_大陸研修生`))
+s105<-data.frame(school=s105$學校名稱,people105=s105$`學位生_正式修讀學位外國生`+s105$`學位生_僑生(含港澳)`+s105$`學位生_正式修讀學位陸生`+
+                   s105$`非學位生_外國交換生`+s105$`非學位生_外國短期研習及個人選讀`+s105$`非學位生_大專附設華語文中心學生`+
+                   s105$`非學位生_大陸研修生`+s105$`非學位生_海青班`+s105$境外專班)
+s103104105<-full_join(s103104,s105,by="school")
+
+s106$`非學位生_大陸研修生`<-as.numeric(gsub("…","0",s106$`非學位生_大陸研修生`))
+s106<-data.frame(school=s106$學校名稱,people106=s106$`學位生_正式修讀學位外國生`+s106$`學位生_僑生(含港澳)`+s106$`學位生_正式修讀學位陸生`+
+                   s106$`非學位生_外國交換生`+s106$`非學位生_外國短期研習及個人選讀`+s106$`非學位生_大專附設華語文中心學生`+
+                   s106$`非學位生_大陸研修生`+s106$`非學位生_海青班`+s106$境外專班)
+s103104105106<-full_join(s103104105,s106,by="school")
+s103104105106[is.na(s103104105106)]=0
+s103104105106$total<-s103104105106$people103+s103104105106$people104+s103104105106$people105+s103104105106$people106
+s103104105106<-arrange(s103104105106,desc(s103104105106$total))
+knitr::kable(s103104105106[1:10,c(1,6)])
+
+```
+
+### 各個國家來台灣唸書的學生人數條狀圖
+```{r ToTWNCountryBar}
+library(dplyr)
+library(ggplot2)
+groupCountry1<-c103104105106%>%
+  group_by(country)%>%
+  tally(total,sort=TRUE)%>%
+  group_by(country = factor(c(country[1:10], rep("Other", n() - 10)),
+                                     levels = c(country[1:10], "Other")))%>%
+  tally(n)
+colnames(groupCountry1)<-c("country","total")
+ggplot()+geom_bar(data=groupCountry1,
+                  aes(x=country,y=total),
+                  stat = "identity",
+                  fill = "red")+
+  labs(x="國家",y="人數")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 0.001))
+
+```
+
+### 各個國家來台灣唸書的學生人數面量圖
+```{r ToTWNCountryMap}
+
+library(readr)
+library(choroplethr)
+Countriesname <- read_csv("C:/Users/CHIUCHUNWEI/Desktop/CountriesComparisionTable.csv")
+colnames(Countriesname)<-c("ISO3","English","country")
+TotalCountry<-merge(c103104105106[,c(1,6)],Countriesname,by="country")
+colnames(TotalCountry)<-c("country","value","ISO3","region")
+TotalCountry[5,2]<-TotalCountry[5,2]+TotalCountry[91,2]+TotalCountry[159,2]
+TotalCountry[107,2]<-TotalCountry[107,2]+TotalCountry[108,2]
+TotalCountry<-TotalCountry%>%
+  subset(region!="Unmatch")%>%
+  subset(country!="索馬利蘭共和國")
+a3<-country_choropleth(TotalCountry)
+a3
+
+```
+
+## 台灣學生國際交流分析
+
+### 資料匯入與處理
+```{r dataloadFromTWN}
+
+library(readr)
+Student_RPT_07 <- read_csv("Student_RPT_07.csv")
+
+```
+
+### 台灣大專院校的學生最喜歡去哪些國家進修交流呢？
+```{r FromTWNCountry}
+
+library(dplyr)
+a<-subset(Student_RPT_07,`學年度`>102)%>%
+group_by(`對方學校(機構)國別(地區)`)%>%
+summarise(nCountry=sum(小計))
+b<-arrange(a,desc(nCountry))
+knitr::kable(b[1:10,])
+
+```
+
+### 哪間大學的出國交流學生數最多呢？
+```{r FromTWNUniversity}
+
+c<-subset(Student_RPT_07,`學年度`>102)%>%
+group_by(`學校名稱`)%>%
+  summarise(nSchool=sum(小計))
+d<-arrange(c,desc(nSchool))
+knitr::kable(d[1:10,])
+
+```
+
+### 台灣大專院校的學生最喜歡去哪些國家進修交流條狀圖
+```{r FromTWNCountryBar}
+
+library(ggplot2)
+groupCountry2<-a%>%
+  group_by(`對方學校(機構)國別(地區)`)%>%
+  tally(nCountry,sort=TRUE)%>%
+  group_by(`對方學校(機構)國別(地區)` = factor(c(`對方學校(機構)國別(地區)`[1:10], rep("Other", n() - 10)),
+                                     levels = c(`對方學校(機構)國別(地區)`[1:10], "Other")))%>%
+  tally(n)
+colnames(groupCountry2)<-c("對方學校(機構)國別(地區)","nCountry")
+ggplot()+geom_bar(data=groupCountry2,
+                  aes(x=`對方學校(機構)國別(地區)`,y=nCountry),
+                  stat = "identity",
+                  fill = "red")+
+  labs(x="國家",y="人數")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 0.001))
+
+```
+
+### 台灣大專院校的學生最喜歡去哪些國家進修交流面量圖
+```{r FromTWNCountryMap}
+
+library(readr)
+countryname <- read_csv("C:/Users/CHIUCHUNWEI/Desktop/CountriesComparisionTable.csv")
+colnames(countryname)<-c("ISO3","English","中文")
+counta<-a
+colnames(counta)<-c("國名","count")
+countb<-merge(counta,countryname,by.x="國名",by.y="中文")
+colnames(countb)<-c("國名","value","ISO3","region")
+countb<-countb%>%
+  subset(region!="Unmatch")
+a6<-country_choropleth(countb,num_colors=9)
+a6
+
+```
+
+## 台灣學生出國留學分析
+
+### 資料匯入與處理
+```{r dataloadFromTWNAb}
+
+library(readr)
+m105 <- read_csv("C:/Users/CHIUCHUNWEI/Downloads/m105.csv")
+
+```
+
+### 台灣學生最喜歡去哪些國家留學呢？
+```{r FromTWNAb}
+
+m105$X4=NULL
+m105$X5=NULL
+m105$X6=NULL
+m105[is.na(m105)]=0
+m105<-arrange(m105,desc(m105$總人數))
+knitr::kable(m105[1:10,1:3])
+
+```
+
+### 台灣學生最喜歡去哪些國家留學面量圖
+```{r FromTWNAbMap}
+
+library(readr)
+library(choroplethr)
+countryname <- read_csv("C:/Users/CHIUCHUNWEI/Desktop/CountriesComparisionTable.csv")
+colnames(countryname)<-c("ISO3","English","國別")
+m105countryname<-merge(m105,countryname,by="國別")
+colnames(m105countryname)<-c("國名","洲別","value","ISO3","region")
+a8<-country_choropleth(m105countryname)
+a8
+
+```
+
+## 綜合分析
+
+請問來台讀書與離台讀書的來源國與留學國趨勢是否相同(5分)？想來台灣唸書的境外生，他們的母國也有很多台籍生嗎？請圖文並茂說明你的觀察(10分)。
+
+由兩張條帳狀圖來看，中國、日本、美國大致相同，但其他國家的就不相同了。所以我覺得趨勢不相同。
+
+####各個國家來台灣唸書的學生人數條狀圖
+
+```{r ToTWNCountryMap3}
+
+ggplot()+geom_bar(data=groupCountry1,
+                  aes(x=country,y=total),
+                  stat = "identity",
+                  fill = "red")+
+  labs(x="國家",y="人數")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 0.001))
+
+```
+
+####台灣大專院校的學生最喜歡去哪些國家進修交流條狀圖
+
+```{r FromTWNAbMap3}
+
+ggplot()+geom_bar(data=groupCountry2,
+                  aes(x=`對方學校(機構)國別(地區)`,y=nCountry),
+                  stat = "identity",
+                  fill = "red")+
+  labs(x="國家",y="人數")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 0.001))
+
+```
+
+由這兩張面量圖得知，美國、澳洲和地圖最左上角的那一小塊都是台灣人喜歡去也是想來台灣念書的，他們的母國也很多台籍生。
+
+####各個國家來台灣唸書的學生人數面量圖
+
+```{r ToTWNCountryMap2}
+
+a3
+
+```
+
+####台灣學生最喜歡去哪些國家留學面量圖
+
+```{r FromTWNAbMap2}
+
+a8
+
+```
+

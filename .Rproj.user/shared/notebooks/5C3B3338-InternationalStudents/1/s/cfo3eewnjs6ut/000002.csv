@@ -1,0 +1,24 @@
+"0","library(readr)"
+"0","Student_RPT_07 <- read_csv(""Student_RPT_07.csv"")"
+"2","Parsed with column specification:
+cols(
+  ¾Ç¦~«× = col_integer(),
+  ¾Ç´Á = col_integer(),
+  ³]¥ß§O = col_character(),
+  ¾Ç®ÕÃþ§O = col_character(),
+  ¾Ç®Õ¥N½X = col_character(),
+  ¾Ç®Õ¦WºÙ = col_character(),
+  ¨t©Ò¥N½X = col_integer(),
+  ¨t©Ò¦WºÙ = col_character(),
+  ¾Ç¨î = col_character(),
+  `¹ï¤è¾Ç®Õ(¾÷ºc)°ê§O(¦a°Ï)` = col_character(),
+  `¹ï¤è¾Ç®Õ(¾÷ºc)¤¤¤å¦WºÙ` = col_character(),
+  `¹ï¤è¾Ç®Õ(¾÷ºc)­^¤å¦WºÙ` = col_character(),
+  ¤p­p = col_integer(),
+  ¨k = col_integer(),
+  ¤k = col_integer()
+)
+"
+"2","2 parsing failures.
+row [38;5;246m# A tibble: 2 x 5[39m col     row col      expected               actual file                 expected   [3m[38;5;246m<int>[39m[23m [3m[38;5;246m<chr>[39m[23m    [3m[38;5;246m<chr>[39m[23m                  [3m[38;5;246m<chr>[39m[23m  [3m[38;5;246m<chr>[39m[23m                actual [38;5;250m1[39m [4m2[24m[4m3[24m579 ¨t©Ò¥N½X no trailing characters A2     'Student_RPT_07.csv' file [38;5;250m2[39m [4m3[24m[4m4[24m284 ¨t©Ò¥N½X no trailing characters A2     'Student_RPT_07.csv'
+"

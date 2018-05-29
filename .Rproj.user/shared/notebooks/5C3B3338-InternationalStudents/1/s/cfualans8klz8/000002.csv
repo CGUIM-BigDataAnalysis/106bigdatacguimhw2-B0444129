@@ -1,0 +1,13 @@
+"0","library(readr)"
+"0","m105 <- read_csv(""C:/Users/CHIUCHUNWEI/Downloads/m105.csv"")"
+"2","Missing column names filled in: 'X4' [4], 'X5' [5], 'X6' [6]"
+"2","Parsed with column specification:
+cols(
+  洲別 = col_character(),
+  國別 = col_character(),
+  總人數 = col_number(),
+  X4 = col_character(),
+  X5 = col_character(),
+  X6 = col_character()
+)
+"

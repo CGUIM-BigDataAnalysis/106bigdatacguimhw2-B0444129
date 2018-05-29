@@ -1,0 +1,51 @@
+"0","library(readr)"
+"2","Warning message:
+"
+"2","In strsplit(code, ""\n"", fixed = TRUE) :"
+"2","
+ "
+"2"," input string 1 is invalid in this locale
+"
+"0","library(choroplethr)"
+"2","Loading required package: acs
+"
+"2","Loading required package: stringr
+"
+"2","Loading required package: XML
+"
+"2","
+Attaching package: ¡¥acs¡¦
+
+"
+"2","The following object is masked from ¡¥package:dplyr¡¦:
+
+    combine
+
+"
+"2","The following object is masked from ¡¥package:base¡¦:
+
+    apply
+
+"
+"2","Choroplethr has a free course: www.CensusMappingCourse.com
+"
+"0","Countriesname <- read_csv(""C:/Users/CHIUCHUNWEI/Desktop/CountriesComparisionTable.csv"")"
+"2","Parsed with column specification:
+cols(
+  ISO3 = col_character(),
+  English = col_character(),
+  Taiwan = col_character()
+)
+"
+"0","colnames(Countriesname)<-c(""ISO3"",""English"",""country"")"
+"0","TotalCountry<-merge(c103104105106[,c(1,6)],Countriesname,by=""country"")"
+"0","colnames(TotalCountry)<-c(""country"",""value"",""ISO3"",""region"")"
+"0","TotalCountry[5,2]<-TotalCountry[5,2]+TotalCountry[91,2]+TotalCountry[159,2]"
+"0","TotalCountry[107,2]<-TotalCountry[107,2]+TotalCountry[108,2]"
+"0","TotalCountry<-TotalCountry%>%"
+"0","  subset(region!=""Unmatch"")%>%"
+"0","  subset(country!=""ç´¢é¦¬åˆ©è˜­å…±å’Œåœ‹"")"
+"0","a3<-country_choropleth(TotalCountry)"
+"2","Your data.frame contains the following regions which are not mappable: Singapore"
+"2","The following regions were missing and are being set to NA: afghanistan, angola, montenegro, qatar, western sahara, south sudan, somaliland, east timor, taiwan, vanuatu, central african republic, northern cyprus, djibouti, eritrea, antarctica, equatorial guinea, kosovo, lesotho"
+"0","a3"
